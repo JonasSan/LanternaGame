@@ -1,3 +1,4 @@
+import com.googlecode.lanterna.SGR;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -29,11 +30,7 @@ public class Main {
         Terminal terminal = createTerminal();
 
         List<Wall> walls = createWall();
-/*
-List<Wall> walls = new ArrayList<>();
-walls.add(0,new Wall(1,12,'x'));
-walls.add(1,new Wall(1,12,'x'));
-*/
+
 
         Player player = createPlayer();
 
@@ -43,27 +40,32 @@ walls.add(1,new Wall(1,12,'x'));
 
         drawCharacters(terminal, player, monsters, walls, loots);
 
+
         do {
             KeyStroke keyStroke = getUserKeyStroke(terminal);
 
-            movePlayer(player, keyStroke, walls);
+            movePlayer(player, keyStroke, walls, loots);
 
             moveMonsters(player, monsters, terminal);
 
             drawCharacters(terminal, player, monsters, walls, loots);
+            if (isGameWon(loots) && player.getX() == 78 && player.getY() == 22) {
+                createWinningScreen(terminal);
+            }
+
 
         } while (isPlayerAlive(player, monsters));
 
 
     }
 
-    private static List<Loot> createLoots () {
+    private static List<Loot> createLoots() {
         List<Loot> loots = new ArrayList<>();
-            loots.add(new Loot(50, 3, '\u229A'));
-            loots.add(new Loot(15, 7, '\u229A'));
-            loots.add(new Loot(13, 3, '\u229A'));
-            return loots;
-        }
+        loots.add(new Loot(70, 20, '\u229A'));
+        loots.add(new Loot(15, 10, '\u229A'));
+        loots.add(new Loot(13, 5, '\u229A'));
+        return loots;
+    }
 
 
     private static void moveMonsters(Player player, List<Monster> monsters, Terminal terminal) throws IOException {
@@ -72,8 +74,12 @@ walls.add(1,new Wall(1,12,'x'));
         }
     }
 
-    private static void movePlayer(Player player, KeyStroke keyStroke, List<Wall> walls) {
-
+    private static void movePlayer(Player player, KeyStroke keyStroke, List<Wall> walls, List<Loot> loots) {
+        for (int i = 0; i < loots.size(); i++) {
+            if (player.getX() == loots.get(i).getX() && player.getY() == loots.get(i).getY()) {
+                loots.remove(i);
+            }
+        }
 
         switch (keyStroke.getKeyType()) {
             case ArrowUp:
@@ -102,7 +108,7 @@ walls.add(1,new Wall(1,12,'x'));
         return keyStroke;
     }
 
-    private static Player createPlayer() throws IOException{
+    private static Player createPlayer() throws IOException {
 
         return new Player(1, 1, '\u047E');
 
@@ -111,10 +117,10 @@ walls.add(1,new Wall(1,12,'x'));
 
     private static List<Monster> createMonsters() {
         List<Monster> monsters = new ArrayList<>();
-        monsters.add(new Monster(50, 3, 'X'));
+      /*  monsters.add(new Monster(50, 3, 'X'));
         monsters.add(new Monster(15, 7, 'X'));
         monsters.add(new Monster(13, 3, 'X'));
-        monsters.add(new Monster(40, 10, 'X'));
+        monsters.add(new Monster(40, 10, 'X'));*/
         return monsters;
     }
 
@@ -184,7 +190,19 @@ walls.add(1,new Wall(1,12,'x'));
         return terminal;
     }
 
-    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<Wall> walls,List<Loot> loots) throws IOException {
+    private static boolean isLootTaken(Player player, List<Loot> loots) {
+        for (Loot loot : loots) {
+            if (player.getX() == loot.getX() && player.getY() == loot.getY()) {
+                return true;
+
+            }
+        }
+        return false;
+    }
+
+
+    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters,
+                                       List<Wall> walls, List<Loot> loots) throws IOException {
         for (Monster monster : monsters) {
             terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
             terminal.putCharacter(' ');
@@ -193,19 +211,14 @@ walls.add(1,new Wall(1,12,'x'));
             terminal.putCharacter(monster.getSymbol());
         }
 
-        for (Loot loot : loots) {
-            terminal.setForegroundColor(new TextColor.RGB(255, 255, 0));
-            terminal.setCursorPosition(loot.getX(),loot.getY());
-            terminal.putCharacter(loot.getSymbol());
-            terminal.resetColorAndSGR();
-
-        }
 
         for (Wall wall : walls) {
             terminal.setForegroundColor(TextColor.ANSI.YELLOW);
             terminal.setCursorPosition(wall.getY(), wall.getX());
             terminal.putCharacter(wall.getSymbol());
+            terminal.resetColorAndSGR();
         }
+
 
         terminal.resetColorAndSGR();
         terminal.setCursorPosition(player.getPreviousX(), player.getPreviousY());
@@ -218,6 +231,18 @@ walls.add(1,new Wall(1,12,'x'));
 
         terminal.flush();
 
+
+        for (Loot loot : loots) {
+            terminal.setForegroundColor(new TextColor.RGB(255, 255, 0));
+            terminal.setCursorPosition(loot.getX(), loot.getY());
+            terminal.putCharacter(loot.getSymbol());
+            terminal.resetColorAndSGR();
+
+        }
+
+        terminal.flush();
+
+
     }
 
     private static boolean isPlayerAlive(Player player, List<Monster> monsters) {
@@ -229,33 +254,43 @@ walls.add(1,new Wall(1,12,'x'));
         return true;
     }
 
-//    private static void createBoard(Terminal terminal)throws IOException{
-//        for (int column = 0; column < 80; column++) {
-//            terminal.setCursorPosition(column, 0); // go to position(column, row)
-//            terminal.putCharacter('\u25ad');
-//        }
-//        for (int column = 0; column < 80; column++) {
-//            terminal.setCursorPosition(column, 24); // go to position(column, row)
-//            terminal.putCharacter('\u25ad');
-//        }
-//
-//
-//        for (int row =0; row < 24; row++) {
-//            terminal.setCursorPosition(0, row); // go to position(column, row)
-//            terminal.putCharacter('\u25af');
-//        }
-//        for (int row = 0; row < 24; row++) {
-//            terminal.setCursorPosition(80, row); // go to position(column, row)
-//            terminal.putCharacter('\u25af');
-//        }
-//    }
-
-
-    public static void runGame() throws IOException {
-        DefaultTerminalFactory terminalFactory =
-                new DefaultTerminalFactory(System.out, System.in, Charset.forName("UTF8"));
-        Terminal terminal = terminalFactory.createTerminal(); // most terminal methods can throw IOException
+    private static boolean isGameWon(List<Loot> loots) {
+        if (loots.size() == 0) {
+            return true;
+        }
+        return false;
     }
 
+    private static void createWinningScreen(Terminal terminal) throws IOException {
+
+
+
+        terminal.resetColorAndSGR();
+        terminal.enableSGR(SGR.BOLD);
+        terminal.setForegroundColor(TextColor.ANSI.GREEN);
+        terminal.enableSGR(SGR.BLINK);
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(32).withRow(12));
+        String message1 = "AWESOME!! \n\t\t\t\t\t\t\t YOU HAVE WON!";
+        for (char c : message1.toCharArray()) {
+            terminal.putCharacter(c);
+        }
+
+
+
+
+       /* for (int i = 32; i < message1.length() + 32; i++) {
+
+
+            terminal.setCursorPosition(i, 12);
+            terminal.putCharacter(message1.charAt(i - 32));
+        }
+        String message = "YOU HAVE WON!";
+        for (int i = 32; i < message.length() + 32; i++) {
+            terminal.setCursorPosition(i, 12);
+            terminal.putCharacter(message.charAt(i - 32));
+            terminal.resetColorAndSGR();
+            terminal.flush();
+        }*/
+    }
 
 }
