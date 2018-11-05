@@ -91,40 +91,73 @@ walls.add(1,new Wall(1,12,'x'));
     }
 
     private static Player createPlayer() {
-        return new Player(10, 10, '\u0C24');
+        return new Player(1, 1, '\u0C24');
 
     }
 
     private static List<Monster> createMonsters() {
         List<Monster> monsters = new ArrayList<>();
-//        monsters.add(new Monster(3, 3, 'X'));
-//        monsters.add(new Monster(15, 7, 'X'));
-//        monsters.add(new Monster(13, 3, 'X'));
-//        monsters.add(new Monster(3, 10, 'X'));
+        monsters.add(new Monster(50, 3, 'X'));
+        monsters.add(new Monster(15, 7, 'X'));
+        monsters.add(new Monster(13, 3, 'X'));
+        monsters.add(new Monster(40, 10, 'X'));
         return monsters;
     }
 
     private static List<Wall> createWall() {
         List<Wall> walls = new ArrayList<>();
+
+        char outerWallSymbol = 'X';
+        char innerWallSymbol = 'O';
 // fyra väggar i en ram
         for (int columns = 0; columns < 80; columns++) { // vägg 3
-            walls.add(new Wall(0, columns, 'X'));
+            walls.add(new Wall(0, columns, outerWallSymbol));
         }
         for (int columns = 0; columns < 80; columns++) { // vägg 4
-            walls.add(new Wall(23, columns, 'X'));
+            walls.add(new Wall(23, columns, outerWallSymbol));
         }
         for (int rows = 0; rows < 24; rows++) { // vägg 2
-            walls.add(new Wall(rows, 0, 'X'));
+            walls.add(new Wall(rows, 0, outerWallSymbol));
         }
         for (int rows = 0; rows < 24; rows++) { // vägg 1
-            walls.add(new Wall(rows, 79, 'X'));
+            walls.add(new Wall(rows, 79, outerWallSymbol));
+        }
+ // Vertikala väggar
+        for (int rows = 1; rows < 5; rows++) { // innervägg 1
+            walls.add(new Wall(rows, 7, innerWallSymbol));
         }
 
-        for (int rows = 15; rows < 23; rows++) {
-            walls.add(new Wall(rows, 40, 'O'));
+        for (int rows = 4; rows < 10; rows++) { // 2
+            walls.add(new Wall(rows, 4, innerWallSymbol));
         }
 
+        for (int rows = 12; rows < 14; rows++) { // 6
+            walls.add(new Wall(rows, 15, innerWallSymbol));
 
+        }
+        for (int rows = 15; rows < 19; rows++) { // 9
+            walls.add(new Wall(rows, 8, innerWallSymbol));
+
+        }
+
+        // Horisontella väggar
+
+        for (int columns = 1; columns < 4; columns++) { // 3
+            walls.add(new Wall(6, columns, innerWallSymbol));
+        }
+
+        for (int columns = 1; columns < 15; columns++) { // 4
+            walls.add(new Wall(12, columns, innerWallSymbol));
+        }
+        for (int columns = 15; columns < 20; columns++) { // 5
+            walls.add(new Wall(14, columns, innerWallSymbol));
+        }
+        for (int columns = 3; columns < 8; columns++) { // 7
+            walls.add(new Wall(15, columns, innerWallSymbol));
+        }
+        for (int columns = 0; columns < 8; columns++) { // 8
+            walls.add(new Wall(18, columns, innerWallSymbol));
+        }
 
         return walls;
     }

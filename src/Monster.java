@@ -100,22 +100,24 @@ public class Monster {
 
 //        if (player.getX() == terminal.setCursorPosition(0,0);)
         if (absDiffX < 3 || absDiffY < 3) {
-         moveTowards(player );
-        }
-        else {
-           int rand= random.nextInt(5);
-            switch (rand){
+            moveTowards(player);
+        } else {
+            int rand = random.nextInt(5);
+            int futureX;
+            int futureY;
+            switch (rand) {
                 case 1:
-                    this.x +=1;
+                    if (Player.isWallNotHit())
+                        this.x += 1;
                     break;
                 case 2:
-                    this.y +=1;
+                    this.y += 1;
                     break;
                 case 3:
-                    this.x -=1;
+                    this.x -= 1;
                     break;
                 case 4:
-                    this.y -=1;
+                    this.y -= 1;
                     break;
             }
 

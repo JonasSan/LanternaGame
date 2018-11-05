@@ -98,29 +98,7 @@ public class Player {
     }
 
 
-    public boolean isWallNotHit(int futureX, int futureY, List<Wall> walls) {
-/*        for (Wall wall : walls) {
-        if (x == (wall.getX()-1)) { // vägg 1
-            return false;
-            } else if (x == (wall.getX() + 1) ) { // vägg 2
-                return false;
-            } else if (y == (wall.getY() + 1)) { // vägg 3
-                return false;
-            } else if (y == (wall.getY() - 1)) { // vägg 4
-                return false;
-            }
-
-
-        }
-        return true;*/
-
-/*
-       for (Wall w : walls) {
-           if ((w.getX() == x-1 && w.getY() == y-1) ||(w.getY() == y+1) && w.getY() == y) {
-               return false;
-           }
-       }
-       return true;*/
+    public static boolean isWallNotHit(int futureX, int futureY, List<Wall> walls) {
         for (Wall wall : walls) {
             if (futureX == wall.getY() && futureY == wall.getX()) {
                 return false;
