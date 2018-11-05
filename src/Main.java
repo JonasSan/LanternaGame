@@ -3,7 +3,11 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
+
+import java.nio.charset.Charset;
 import java.io.IOException;
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +16,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             startGame();
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         } finally {
@@ -49,8 +53,8 @@ walls.add(1,new Wall(1,12,'x'));
         } while (isPlayerAlive(player, monsters));
 
 
-
     }
+
 
     private static void moveMonsters(Player player, List<Monster> monsters, Terminal terminal) throws IOException {
         for (Monster monster : monsters) {
@@ -59,7 +63,6 @@ walls.add(1,new Wall(1,12,'x'));
     }
 
     private static void movePlayer(Player player, KeyStroke keyStroke, List<Wall> walls) {
-
 
 
         switch (keyStroke.getKeyType()) {
@@ -78,7 +81,6 @@ walls.add(1,new Wall(1,12,'x'));
         }
 
     }
-
 
 
     private static KeyStroke getUserKeyStroke(Terminal terminal) throws InterruptedException, IOException {
@@ -122,7 +124,7 @@ walls.add(1,new Wall(1,12,'x'));
         for (int rows = 0; rows < 24; rows++) { // vägg 1
             walls.add(new Wall(rows, 79, outerWallSymbol));
         }
- // Vertikala väggar
+        // Vertikala väggar
         for (int rows = 1; rows < 5; rows++) { // innervägg 1
             walls.add(new Wall(rows, 7, innerWallSymbol));
         }
@@ -226,6 +228,11 @@ walls.add(1,new Wall(1,12,'x'));
 //    }
 
 
+    public static void runGame() throws IOException{
+        DefaultTerminalFactory terminalFactory =
+                new DefaultTerminalFactory(System.out, System.in, Charset.forName("UTF8"));
+        Terminal terminal = terminalFactory.createTerminal(); // most terminal methods can throw IOException
+    }
 
 
 }

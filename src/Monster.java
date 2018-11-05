@@ -107,8 +107,10 @@ public class Monster {
             int futureY;
             switch (rand) {
                 case 1:
-                    if (Player.isWallNotHit())
-                        this.x += 1;
+                    this.x += 1;
+                    // TODO
+                    //if (Player.isWallNotHit())
+
                     break;
                 case 2:
                     this.y += 1;
@@ -135,5 +137,6 @@ public class Monster {
                 ", previousX=" + previousX +
                 ", previousY=" + previousY +
                 '}';
+
     }
 }
