@@ -99,7 +99,7 @@ public class Monster {
 
 
 //        if (player.getX() == terminal.setCursorPosition(0,0);)
-        if (absDiffX < 3 || absDiffY < 3) {
+        if (absDiffX < 3 && absDiffY < 3) {
             moveTowards(player);
         } else {
             int rand = random.nextInt(5);

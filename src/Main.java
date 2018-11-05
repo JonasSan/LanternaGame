@@ -39,7 +39,9 @@ walls.add(1,new Wall(1,12,'x'));
 
         List<Monster> monsters = createMonsters();
 
-        drawCharacters(terminal, player, monsters, walls);
+        List<Loot> loots = createLoots();
+
+        drawCharacters(terminal, player, monsters, walls, loots);
 
         do {
             KeyStroke keyStroke = getUserKeyStroke(terminal);
@@ -48,12 +50,20 @@ walls.add(1,new Wall(1,12,'x'));
 
             moveMonsters(player, monsters, terminal);
 
-            drawCharacters(terminal, player, monsters, walls);
+            drawCharacters(terminal, player, monsters, walls, loots);
 
         } while (isPlayerAlive(player, monsters));
 
 
     }
+
+    private static List<Loot> createLoots () {
+        List<Loot> loots = new ArrayList<>();
+            loots.add(new Loot(50, 3, '\u229A'));
+            loots.add(new Loot(15, 7, '\u229A'));
+            loots.add(new Loot(13, 3, '\u229A'));
+            return loots;
+        }
 
 
     private static void moveMonsters(Player player, List<Monster> monsters, Terminal terminal) throws IOException {
@@ -92,8 +102,10 @@ walls.add(1,new Wall(1,12,'x'));
         return keyStroke;
     }
 
-    private static Player createPlayer() {
-        return new Player(1, 1, '\u0C24');
+    private static Player createPlayer() throws IOException{
+
+        return new Player(1, 1, '\u047E');
+
 
     }
 
@@ -172,13 +184,21 @@ walls.add(1,new Wall(1,12,'x'));
         return terminal;
     }
 
-    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<Wall> walls) throws IOException {
+    private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters, List<Wall> walls,List<Loot> loots) throws IOException {
         for (Monster monster : monsters) {
             terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
             terminal.putCharacter(' ');
 
             terminal.setCursorPosition(monster.getX(), monster.getY());
             terminal.putCharacter(monster.getSymbol());
+        }
+
+        for (Loot loot : loots) {
+            terminal.setForegroundColor(new TextColor.RGB(255, 255, 0));
+            terminal.setCursorPosition(loot.getX(),loot.getY());
+            terminal.putCharacter(loot.getSymbol());
+            terminal.resetColorAndSGR();
+
         }
 
         for (Wall wall : walls) {
@@ -190,8 +210,11 @@ walls.add(1,new Wall(1,12,'x'));
         terminal.resetColorAndSGR();
         terminal.setCursorPosition(player.getPreviousX(), player.getPreviousY());
         terminal.putCharacter(' ');
+
+        terminal.setForegroundColor(new TextColor.RGB(255, 0, 102));
         terminal.setCursorPosition(player.getX(), player.getY());
         terminal.putCharacter(player.getSymbol());
+        terminal.resetColorAndSGR();
 
         terminal.flush();
 
@@ -228,7 +251,7 @@ walls.add(1,new Wall(1,12,'x'));
 //    }
 
 
-    public static void runGame() throws IOException{
+    public static void runGame() throws IOException {
         DefaultTerminalFactory terminalFactory =
                 new DefaultTerminalFactory(System.out, System.in, Charset.forName("UTF8"));
         Terminal terminal = terminalFactory.createTerminal(); // most terminal methods can throw IOException
