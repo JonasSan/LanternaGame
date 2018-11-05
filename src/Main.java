@@ -3,12 +3,10 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-
-
-import java.nio.charset.Charset;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Scanner;
 import java.io.IOException;
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +15,13 @@ public class Main {
     public static void main(String[] args) {
         try {
             startGame();
+
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         } finally {
+
+
             System.out.println("Game over!");
         }
 
@@ -30,7 +31,6 @@ public class Main {
         Terminal terminal = createTerminal();
 
         List<Wall> walls = createWall();
-
 
         Player player = createPlayer();
 
@@ -49,14 +49,13 @@ public class Main {
             moveMonsters(player, monsters, terminal);
 
             drawCharacters(terminal, player, monsters, walls, loots);
-            if (isGameWon(loots) && player.getX() == 78 && player.getY() == 22) {
+            if (isGameWon(loots) && player.getX() == 78 && player.getY() == 21) {
                 createWinningScreen(terminal);
             }
 
-
         } while (isPlayerAlive(player, monsters));
 
-
+        createScreenOfDeath(terminal);
     }
 
     private static List<Loot> createLoots() {
@@ -116,16 +115,17 @@ public class Main {
     }
 
     private static List<Monster> createMonsters() {
+        char monsterSymbol = '\u046a';
         List<Monster> monsters = new ArrayList<>();
-      /*  monsters.add(new Monster(50, 3, 'X'));
-        monsters.add(new Monster(15, 7, 'X'));
-        monsters.add(new Monster(13, 3, 'X'));
-        monsters.add(new Monster(40, 10, 'X'));*/
+        monsters.add(new Monster(52, 3, monsterSymbol));
+        monsters.add(new Monster(20, 10, monsterSymbol));
+        monsters.add(new Monster(60, 3, monsterSymbol));
+        monsters.add(new Monster(40, 20, monsterSymbol));
         return monsters;
     }
 
     private static List<Wall> createWall() {
-        List<Wall> walls = new ArrayList<>();
+       /* List<Wall> walls = new ArrayList<>();
 
         char outerWallSymbol = 'X';
         char innerWallSymbol = 'O';
@@ -180,6 +180,35 @@ public class Main {
         }
 
         return walls;
+*/
+
+        String path = "Wall.txt";
+        File file = new File(path);
+        List<Wall> walls = new ArrayList<>();
+        try (Scanner in = new Scanner(file) ) {
+            int y = 0;
+            while (in.hasNextLine()){
+                String line = in.nextLine();
+
+                int x = 0;
+                for (char c : line.toCharArray()) {
+                    Wall wallObject = new Wall(x, y, c);
+                    walls.add(wallObject);
+                    x++;
+                }
+                y++;
+
+            }
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+
+   return walls;
+
+
     }
 
 
@@ -190,31 +219,16 @@ public class Main {
         return terminal;
     }
 
-    private static boolean isLootTaken(Player player, List<Loot> loots) {
-        for (Loot loot : loots) {
-            if (player.getX() == loot.getX() && player.getY() == loot.getY()) {
-                return true;
-
-            }
-        }
-        return false;
-    }
-
 
     private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters,
                                        List<Wall> walls, List<Loot> loots) throws IOException {
-        for (Monster monster : monsters) {
-            terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
-            terminal.putCharacter(' ');
 
-            terminal.setCursorPosition(monster.getX(), monster.getY());
-            terminal.putCharacter(monster.getSymbol());
-        }
+
 
 
         for (Wall wall : walls) {
             terminal.setForegroundColor(TextColor.ANSI.YELLOW);
-            terminal.setCursorPosition(wall.getY(), wall.getX());
+            terminal.setCursorPosition(wall.getX(), wall.getY());
             terminal.putCharacter(wall.getSymbol());
             terminal.resetColorAndSGR();
         }
@@ -229,6 +243,15 @@ public class Main {
         terminal.putCharacter(player.getSymbol());
         terminal.resetColorAndSGR();
 
+        terminal.flush();
+
+        for (Monster monster : monsters) {
+            terminal.setCursorPosition(monster.getPreviousX(), monster.getPreviousY());
+            terminal.putCharacter(' ');
+
+            terminal.setCursorPosition(monster.getX(), monster.getY());
+            terminal.putCharacter(monster.getSymbol());
+        }
         terminal.flush();
 
 
@@ -262,35 +285,32 @@ public class Main {
     }
 
     private static void createWinningScreen(Terminal terminal) throws IOException {
-
-
-
         terminal.resetColorAndSGR();
         terminal.enableSGR(SGR.BOLD);
         terminal.setForegroundColor(TextColor.ANSI.GREEN);
         terminal.enableSGR(SGR.BLINK);
         terminal.setCursorPosition(terminal.getCursorPosition().withColumn(32).withRow(12));
-        String message1 = "AWESOME!! \n\t\t\t\t\t\t\t YOU HAVE WON!";
+        String message1 = "AWESOME!! \n\t\t\t\t\t\t YOU HAVE WON!";
         for (char c : message1.toCharArray()) {
             terminal.putCharacter(c);
         }
+        terminal.flush();
+        terminal.resetColorAndSGR();
 
-
-
-
-       /* for (int i = 32; i < message1.length() + 32; i++) {
-
-
-            terminal.setCursorPosition(i, 12);
-            terminal.putCharacter(message1.charAt(i - 32));
-        }
-        String message = "YOU HAVE WON!";
-        for (int i = 32; i < message.length() + 32; i++) {
-            terminal.setCursorPosition(i, 12);
-            terminal.putCharacter(message.charAt(i - 32));
-            terminal.resetColorAndSGR();
-            terminal.flush();
-        }*/
     }
 
+    private static void createScreenOfDeath(Terminal terminal) throws IOException {
+
+        terminal.resetColorAndSGR();
+        terminal.enableSGR(SGR.BOLD);
+        terminal.setForegroundColor(TextColor.ANSI.RED);
+        terminal.enableSGR(SGR.BLINK);
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(32).withRow(12));
+        String message1 = "LOOOSER!! \n\t\t\t\t\t\t\t YOU SUCK!";
+        for (char c : message1.toCharArray()) {
+            terminal.putCharacter(c);
+        }
+        terminal.flush();
+
+    }
 }

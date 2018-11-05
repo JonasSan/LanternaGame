@@ -97,9 +97,7 @@ public class Monster {
 
         Random random = new Random();
 
-
-//        if (player.getX() == terminal.setCursorPosition(0,0);)
-        if (absDiffX < 3 && absDiffY < 3) {
+        if (absDiffX < 1 && absDiffY < 1) {
             moveTowards(player);
         } else {
             int rand = random.nextInt(5);
@@ -108,8 +106,6 @@ public class Monster {
             switch (rand) {
                 case 1:
                     this.x += 1;
-                    // TODO
-                    //if (Player.isWallNotHit())
 
                     break;
                 case 2:

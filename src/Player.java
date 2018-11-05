@@ -99,8 +99,9 @@ public class Player {
 
 
     public static boolean isWallNotHit(int futureX, int futureY, List<Wall> walls) {
-        for (Wall wall : walls) {
-            if (futureX == wall.getY() && futureY == wall.getX()) {
+        for (Wall wall : walls) { // TODO fixa detta
+// nÅNSTAN HAR VI VÄNT X/Y FEL. HITTA DET VID TID.
+            if (futureX == wall.getX() && futureY == wall.getY() && wall.getSymbol() != ' ') {
                 return false;
             }
         }

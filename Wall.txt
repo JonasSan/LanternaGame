@@ -1,0 +1,32 @@
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+x         o      o               o o o                                         x
+x         o      o             ooo   o            oooooooooooooooooooooooo     x
+x         o      o                   o                                   o     x
+x         o      o      o            o                                   o     x
+x                o     ooooooooooooooo                                   o     x
+x                o                     oooooo       ooooooooooooooooo    o     x
+xooooooo         o                     o    o       o                    o     x
+x      o         oooooooooooo          oooooo       o                    o     x
+x      o                                            o    ooooooooo       o     x
+x                       ooooooo      ooooooooooo    o            o       o     x
+x                       o     o                o    o            o       o     x
+xooooooooooooo          ooooooo                o    o   oooooooooo       o     x
+x            o                                 o    o   o                o     x
+x            ooooooooooo                            o   o         oooooooo     x
+x                                                   o   o         o            x
+x                                              o    ooooo         o            x
+x   oooooo              o                      o                  oooooooo     x
+x        o              oooooooooooooooooooooooo      oooooo             o     x
+x        o                                            o    o             o     x
+xooooooooo                     oooooooooo             oooooo                   x
+x                              o                                               x
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+
+
+
+
+
+      
