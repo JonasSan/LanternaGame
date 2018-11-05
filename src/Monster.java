@@ -1,3 +1,6 @@
+import com.googlecode.lanterna.terminal.Terminal;
+
+import java.io.IOException;
 import java.util.Random;
 
 public class Monster {
@@ -82,7 +85,7 @@ public class Monster {
         }
     }
 
-    public void moveRandom(Player player) {
+    public void moveRandom(Player player, Terminal terminal) throws IOException {
 
         previousX = x;
         previousY = y;
@@ -95,6 +98,7 @@ public class Monster {
         Random random = new Random();
 
 
+//        if (player.getX() == terminal.setCursorPosition(0,0);)
         if (absDiffX < 3 || absDiffY < 3) {
          moveTowards(player );
         }

@@ -1,3 +1,9 @@
+import com.googlecode.lanterna.terminal.Terminal;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Random;
+
 public class Player {
     private int x;
     private int y;
@@ -33,28 +39,94 @@ public class Player {
         return previousY;
     }
 
-    public void moveUp(){
-        previousX = x;
-        previousY = y;
-        y--;
+    public void moveUp(List<Wall> walls) {
+        int futureX = x;
+        int futureY = y-1;
+
+        if (isWallNotHit(futureX, futureY, walls)) {
+            previousX = x;
+            previousY = y;
+            y--;
+        } else {
+            previousX = x;
+            previousY = y;
+        }
     }
 
-    public void moveDown(){
-        previousX = x;
-        previousY = y;
-        y++;
+    public void moveDown(List<Wall> walls) {
+        int futureX = x;
+        int futureY = y+1;
+
+        if (isWallNotHit(futureX, futureY, walls)) {
+            previousX = x;
+            previousY = y;
+            y++;
+        } else {
+            previousX = x;
+            previousY = y;
+        }
     }
 
-    public void moveLeft(){
-        previousX = x;
-        previousY = y;
-        x--;
+    public void moveLeft(List<Wall> walls) {
+        int futureX = x - 1;
+        int futureY = y;
+
+        if (isWallNotHit(futureX, futureY, walls)) {
+            previousX = x;
+            previousY = y;
+            x--;
+        } else {
+            previousX = x;
+            previousY = y;
+        }
     }
 
-    public void moveRight(){
-        previousX = x;
-        previousY = y;
-        x++;
+    public void moveRight(List<Wall> walls) {
+
+        int futureX = x + 1;
+        int futureY = y;
+
+
+        if (isWallNotHit(futureX, futureY, walls)) {
+            previousX = x;
+            previousY = y;
+            x++;
+        } else {
+            previousX = x;
+            previousY = y;
+        }
+    }
+
+
+    public boolean isWallNotHit(int futureX, int futureY, List<Wall> walls) {
+/*        for (Wall wall : walls) {
+        if (x == (wall.getX()-1)) { // vägg 1
+            return false;
+            } else if (x == (wall.getX() + 1) ) { // vägg 2
+                return false;
+            } else if (y == (wall.getY() + 1)) { // vägg 3
+                return false;
+            } else if (y == (wall.getY() - 1)) { // vägg 4
+                return false;
+            }
+
+
+        }
+        return true;*/
+
+/*
+       for (Wall w : walls) {
+           if ((w.getX() == x-1 && w.getY() == y-1) ||(w.getY() == y+1) && w.getY() == y) {
+               return false;
+           }
+       }
+       return true;*/
+        for (Wall wall : walls) {
+            if (futureX == wall.getY() && futureY == wall.getX()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
