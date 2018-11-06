@@ -127,63 +127,7 @@ public class Main {
     }
 
     private static List<Wall> createWall() {
-       /* List<Wall> walls = new ArrayList<>();
-
-        char outerWallSymbol = 'X';
-        char innerWallSymbol = 'O';
-// fyra väggar i en ram
-        for (int columns = 0; columns < 80; columns++) { // vägg 3
-            walls.add(new Wall(0, columns, outerWallSymbol));
-        }
-        for (int columns = 0; columns < 80; columns++) { // vägg 4
-            walls.add(new Wall(23, columns, outerWallSymbol));
-        }
-        for (int rows = 0; rows < 24; rows++) { // vägg 2
-            walls.add(new Wall(rows, 0, outerWallSymbol));
-        }
-        for (int rows = 0; rows < 24; rows++) { // vägg 1
-            walls.add(new Wall(rows, 79, outerWallSymbol));
-        }
-        // Vertikala väggar
-        for (int rows = 1; rows < 5; rows++) { // innervägg 1
-            walls.add(new Wall(rows, 7, innerWallSymbol));
-        }
-
-        for (int rows = 4; rows < 10; rows++) { // 2
-            walls.add(new Wall(rows, 4, innerWallSymbol));
-        }
-
-        for (int rows = 12; rows < 14; rows++) { // 6
-            walls.add(new Wall(rows, 15, innerWallSymbol));
-
-        }
-        for (int rows = 15; rows < 19; rows++) { // 9
-            walls.add(new Wall(rows, 8, innerWallSymbol));
-
-        }
-
-        // Horisontella väggar
-
-        for (int columns = 1; columns < 4; columns++) { // 3
-            walls.add(new Wall(6, columns, innerWallSymbol));
-        }
-
-        for (int columns = 1; columns < 15; columns++) { // 4
-            walls.add(new Wall(12, columns, innerWallSymbol));
-        }
-        for (int columns = 15; columns < 20; columns++) { // 5
-            walls.add(new Wall(14, columns, innerWallSymbol));
-        }
-        for (int columns = 3; columns < 8; columns++) { // 7
-            walls.add(new Wall(15, columns, innerWallSymbol));
-        }
-        for (int columns = 0; columns < 8; columns++) { // 8
-            walls.add(new Wall(18, columns, innerWallSymbol));
-        }
-
-        return walls;
-*/
-
+        
         String path = "Wall.txt";
         File file = new File(path);
         List<Wall> walls = new ArrayList<>();
