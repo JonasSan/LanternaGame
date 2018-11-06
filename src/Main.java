@@ -56,8 +56,8 @@ public class Main {
 
         if (isPlayerAlive(player, monsters)) {
             highscoreToTXT(startTime);
-            List<String> highscorelist = createHighScoreList();
-            createWinningScreen(terminal, startTime, highscorelist);
+            List<String> highScoreList = createHighScoreList();
+            createWinningScreen(terminal, startTime, highScoreList);
         } else {
 
             createScreenOfDeath(terminal, startTime);
@@ -69,6 +69,8 @@ public class Main {
         loots.add(new Loot(70, 20, '\u229A'));
         loots.add(new Loot(15, 10, '\u229A'));
         loots.add(new Loot(13, 5, '\u229A'));
+        loots.add(new Loot(77, 5, '\u229A'));
+
         return loots;
     }
 
@@ -128,9 +130,7 @@ public class Main {
         monsters.add(new Monster(60, 3, monsterSymbol));
         monsters.add(new Monster(40, 20, monsterSymbol));
         monsters.add(new Monster(10, 13, monsterSymbol));
-        monsters.add(new Monster(50, 19, monsterSymbol));
-        monsters.add(new Monster(20, 9, monsterSymbol));
-
+ 
 
 
         return monsters;
@@ -254,7 +254,7 @@ public class Main {
             terminal.putCharacter(c);
         }
         terminal.setCursorPosition(terminal.getCursorPosition().withColumn(20).withRow(24));
-        String lootStat = "   LOOTS LEFT: " + loots.size();
+        String lootStat = "   TREATS LEFT: " + loots.size();
         for (char c : lootStat.toCharArray()) {
             terminal.putCharacter(c);
         }
@@ -366,7 +366,7 @@ public class Main {
         terminal.setForegroundColor(TextColor.ANSI.RED);
         terminal.enableSGR(SGR.BLINK);
 
-        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(28).withRow(14));
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(26).withRow(14));
         String message3 = "YOU LASTED ONLY " + Long.toString((System.currentTimeMillis() - startTime) / 1000) + " SECONDS";
         for (char c : message3.toCharArray()) {
             terminal.putCharacter(c);
