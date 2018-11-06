@@ -38,7 +38,9 @@ public class Main {
 
         List<Loot> loots = createLoots();
 
-        drawCharacters(terminal, player, monsters, walls, loots);
+        long startTime = System.currentTimeMillis();
+        drawCharacters(terminal, player, monsters, walls, loots, startTime);
+
 
 
         do {
@@ -48,14 +50,14 @@ public class Main {
 
             moveMonsters(player, monsters, terminal);
 
-            drawCharacters(terminal, player, monsters, walls, loots);
+            drawCharacters(terminal, player, monsters, walls, loots, startTime);
             if (isGameWon(loots) && player.getX() == 78 && player.getY() == 21) {
-                createWinningScreen(terminal);
+                createWinningScreen(terminal,startTime);
             }
 
         } while (isPlayerAlive(player, monsters));
 
-        createScreenOfDeath(terminal);
+        createScreenOfDeath(terminal, startTime);
     }
 
     private static List<Loot> createLoots() {
@@ -213,6 +215,7 @@ public class Main {
 
 
     private static Terminal createTerminal() throws IOException {
+
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Terminal terminal = terminalFactory.createTerminal();
         terminal.setCursorVisible(false);
@@ -221,7 +224,7 @@ public class Main {
 
 
     private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters,
-                                       List<Wall> walls, List<Loot> loots) throws IOException {
+                                       List<Wall> walls, List<Loot> loots, long startTime) throws IOException {
 
 
 
@@ -263,6 +266,17 @@ public class Main {
 
         }
 
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(1).withRow(24));
+        String timeCount = "TOTAL TIME: " + Long.toString((System.currentTimeMillis() - startTime)/1000) + " SEC ";
+        for (char c : timeCount.toCharArray()) {
+            terminal.putCharacter(c);
+        }
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(20).withRow(24));
+        String lootStat = "   LOOTS LEFT: " + loots.size();
+        for (char c : lootStat.toCharArray()) {
+            terminal.putCharacter(c);
+        }
+
         terminal.flush();
 
 
@@ -284,14 +298,26 @@ public class Main {
         return false;
     }
 
-    private static void createWinningScreen(Terminal terminal) throws IOException {
+    private static void createWinningScreen(Terminal terminal, long startTime) throws IOException {
         terminal.resetColorAndSGR();
         terminal.enableSGR(SGR.BOLD);
         terminal.setForegroundColor(TextColor.ANSI.GREEN);
         terminal.enableSGR(SGR.BLINK);
-        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(32).withRow(12));
-        String message1 = "AWESOME!! \n\t\t\t\t\t\t YOU HAVE WON!";
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(37).withRow(12));
+        String message1 = "AWESOME!!";
         for (char c : message1.toCharArray()) {
+            terminal.putCharacter(c);
+        }
+
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(35).withRow(13));
+        String message2 = "YOU HAVE WON!";
+        for (char c : message2.toCharArray()) {
+            terminal.putCharacter(c);
+        }
+
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(31).withRow(14));
+        String message3 = "YOU DID IT IN: " + Long.toString((System.currentTimeMillis() - startTime)/1000) + " Seconds";
+        for (char c : message3.toCharArray()) {
             terminal.putCharacter(c);
         }
         terminal.flush();
@@ -299,15 +325,29 @@ public class Main {
 
     }
 
-    private static void createScreenOfDeath(Terminal terminal) throws IOException {
+    private static void createScreenOfDeath(Terminal terminal, long startTime) throws IOException {
 
         terminal.resetColorAndSGR();
         terminal.enableSGR(SGR.BOLD);
         terminal.setForegroundColor(TextColor.ANSI.RED);
         terminal.enableSGR(SGR.BLINK);
-        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(32).withRow(12));
-        String message1 = "LOOOSER!! \n\t\t\t\t\t\t\t YOU SUCK!";
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(33).withRow(12));
+        String message1 = "LOOOSER!!";
         for (char c : message1.toCharArray()) {
+            terminal.putCharacter(c);
+        }
+
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(33).withRow(13));
+        String message2 = "YOU SUCK!";
+        for (char c : message2.toCharArray()) {
+            terminal.putCharacter(c);
+        }
+        terminal.resetColorAndSGR();
+        terminal.setForegroundColor(TextColor.ANSI.RED);
+        terminal.enableSGR(SGR.BLINK);
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(28).withRow(14));
+        String message3 = "\nYOU LASTED ONLY " + Long.toString((System.currentTimeMillis() - startTime)/1000) + " SECONDS";
+        for (char c : message3.toCharArray()) {
             terminal.putCharacter(c);
         }
         terminal.flush();

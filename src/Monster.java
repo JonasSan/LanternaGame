@@ -106,7 +106,6 @@ public class Monster {
             switch (rand) {
                 case 1:
                     this.x += 1;
-
                     break;
                 case 2:
                     this.y += 1;
