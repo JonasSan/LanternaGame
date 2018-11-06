@@ -3,12 +3,9 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-import java.io.File;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.io.*;
+import java.util.*;
 
 public class Main {
 
@@ -41,8 +38,7 @@ public class Main {
         long startTime = System.currentTimeMillis();
         drawCharacters(terminal, player, monsters, walls, loots, startTime);
 
-
-
+        boolean win;
         do {
             KeyStroke keyStroke = getUserKeyStroke(terminal);
 
@@ -51,13 +47,21 @@ public class Main {
             moveMonsters(player, monsters, terminal);
 
             drawCharacters(terminal, player, monsters, walls, loots, startTime);
+            win = false;
             if (isGameWon(loots) && player.getX() == 78 && player.getY() == 21) {
-                createWinningScreen(terminal,startTime);
+                win = true;
             }
 
-        } while (isPlayerAlive(player, monsters));
+        } while (isPlayerAlive(player, monsters) && !win);
 
-        createScreenOfDeath(terminal, startTime);
+        if (isPlayerAlive(player, monsters)) {
+            highscoreToTXT(startTime);
+            List<String> highscorelist = createHighScoreList();
+            createWinningScreen(terminal, startTime, highscorelist);
+        } else {
+
+            createScreenOfDeath(terminal, startTime);
+        }
     }
 
     private static List<Loot> createLoots() {
@@ -123,17 +127,23 @@ public class Main {
         monsters.add(new Monster(20, 10, monsterSymbol));
         monsters.add(new Monster(60, 3, monsterSymbol));
         monsters.add(new Monster(40, 20, monsterSymbol));
+        monsters.add(new Monster(10, 13, monsterSymbol));
+        monsters.add(new Monster(50, 19, monsterSymbol));
+        monsters.add(new Monster(20, 9, monsterSymbol));
+
+
+
         return monsters;
     }
 
     private static List<Wall> createWall() {
-        
+
         String path = "Wall.txt";
         File file = new File(path);
         List<Wall> walls = new ArrayList<>();
-        try (Scanner in = new Scanner(file) ) {
+        try (Scanner in = new Scanner(file)) {
             int y = 0;
-            while (in.hasNextLine()){
+            while (in.hasNextLine()) {
                 String line = in.nextLine();
 
                 int x = 0;
@@ -146,17 +156,36 @@ public class Main {
 
             }
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
 
 
-   return walls;
+        return walls;
 
 
     }
 
+    private static List<String> createHighScoreList() {
+        String path = "highscore.txt";
+        File file = new File(path);
+        List<String> list = new ArrayList<>();
+        try (Scanner in = new Scanner(file)) {
+
+            while (in.hasNextLine()) {
+                String line = in.nextLine();
+                list.add(line);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return list;
+
+    }
 
     private static Terminal createTerminal() throws IOException {
 
@@ -169,8 +198,6 @@ public class Main {
 
     private static void drawCharacters(Terminal terminal, Player player, List<Monster> monsters,
                                        List<Wall> walls, List<Loot> loots, long startTime) throws IOException {
-
-
 
 
         for (Wall wall : walls) {
@@ -209,9 +236,20 @@ public class Main {
             terminal.resetColorAndSGR();
 
         }
+        if (loots.size() == 0) {
+            terminal.setCursorPosition(terminal.getCursorPosition().withColumn(78).withRow(21));
+            terminal.resetColorAndSGR();
+            terminal.enableSGR(SGR.BOLD);
+            terminal.setForegroundColor(TextColor.ANSI.GREEN);
+            terminal.enableSGR(SGR.BLINK);
+            terminal.putCharacter('\u2691');
+            terminal.resetColorAndSGR();
+            terminal.flush();
+
+        }
 
         terminal.setCursorPosition(terminal.getCursorPosition().withColumn(1).withRow(24));
-        String timeCount = "TOTAL TIME: " + Long.toString((System.currentTimeMillis() - startTime)/1000) + " SEC ";
+        String timeCount = "TOTAL TIME: " + Long.toString((System.currentTimeMillis() - startTime) / 1000) + " SEC ";
         for (char c : timeCount.toCharArray()) {
             terminal.putCharacter(c);
         }
@@ -242,28 +280,66 @@ public class Main {
         return false;
     }
 
-    private static void createWinningScreen(Terminal terminal, long startTime) throws IOException {
+    private static void highscoreToTXT(long startTime) throws IOException {
+        final String time = Long.toString((System.currentTimeMillis() - startTime) / 1000);
+        try {
+            FileWriter write = new FileWriter("highscore.txt", true);
+            BufferedWriter print_line = new BufferedWriter(write);
+            print_line.write(time);
+            print_line.newLine();
+            print_line.flush();
+            print_line.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void createWinningScreen(Terminal terminal, long startTime, List<String> highscoreList) throws IOException {
         terminal.resetColorAndSGR();
         terminal.enableSGR(SGR.BOLD);
         terminal.setForegroundColor(TextColor.ANSI.GREEN);
         terminal.enableSGR(SGR.BLINK);
-        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(37).withRow(12));
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(37).withRow(9));
         String message1 = "AWESOME!!";
         for (char c : message1.toCharArray()) {
             terminal.putCharacter(c);
         }
 
-        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(35).withRow(13));
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(35).withRow(10));
         String message2 = "YOU HAVE WON!";
         for (char c : message2.toCharArray()) {
             terminal.putCharacter(c);
         }
 
-        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(31).withRow(14));
-        String message3 = "YOU DID IT IN: " + Long.toString((System.currentTimeMillis() - startTime)/1000) + " Seconds";
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(31).withRow(11));
+        String message3 = "YOU DID IT IN: " + Long.toString((System.currentTimeMillis() - startTime) / 1000) + " Seconds";
         for (char c : message3.toCharArray()) {
             terminal.putCharacter(c);
         }
+        terminal.resetColorAndSGR();
+        terminal.setForegroundColor(TextColor.ANSI.GREEN);
+        terminal.enableSGR(SGR.BOLD);
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(35).withRow(13));
+        String message4 = "FASTEST TIME: ";
+        for (char c : message4.toCharArray()) {
+            terminal.putCharacter(c);
+        }
+        terminal.resetColorAndSGR();
+        terminal.setForegroundColor(TextColor.ANSI.GREEN);
+        terminal.setCursorPosition(terminal.getCursorPosition().withColumn(40).withRow(14));
+        Collections.sort(highscoreList);
+        int row = 0;
+        for (String s : highscoreList) {
+            String score = s;
+            for (char c : score.toCharArray()) {
+                terminal.putCharacter(c);
+            }
+            row++;
+            terminal.putCharacter(' ');
+            terminal.putCharacter('S');
+            terminal.setCursorPosition(terminal.getCursorPosition().withColumn(40).withRow(14 + row));
+        }
+
         terminal.flush();
         terminal.resetColorAndSGR();
 
@@ -289,8 +365,9 @@ public class Main {
         terminal.resetColorAndSGR();
         terminal.setForegroundColor(TextColor.ANSI.RED);
         terminal.enableSGR(SGR.BLINK);
+
         terminal.setCursorPosition(terminal.getCursorPosition().withColumn(28).withRow(14));
-        String message3 = "\nYOU LASTED ONLY " + Long.toString((System.currentTimeMillis() - startTime)/1000) + " SECONDS";
+        String message3 = "YOU LASTED ONLY " + Long.toString((System.currentTimeMillis() - startTime) / 1000) + " SECONDS";
         for (char c : message3.toCharArray()) {
             terminal.putCharacter(c);
         }

@@ -97,7 +97,7 @@ public class Monster {
 
         Random random = new Random();
 
-        if (absDiffX < 1 && absDiffY < 1) {
+        if (absDiffX < 3 && absDiffY < 3) {
             moveTowards(player);
         } else {
             int rand = random.nextInt(5);
