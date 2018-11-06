@@ -85,6 +85,7 @@ public class Main {
         for (int i = 0; i < loots.size(); i++) {
             if (player.getX() == loots.get(i).getX() && player.getY() == loots.get(i).getY()) {
                 loots.remove(i);
+               
             }
         }
 
@@ -130,7 +131,6 @@ public class Main {
         monsters.add(new Monster(60, 3, monsterSymbol));
         monsters.add(new Monster(40, 20, monsterSymbol));
         monsters.add(new Monster(10, 13, monsterSymbol));
- 
 
 
         return monsters;
@@ -257,6 +257,7 @@ public class Main {
         String lootStat = "   TREATS LEFT: " + loots.size();
         for (char c : lootStat.toCharArray()) {
             terminal.putCharacter(c);
+            terminal.resetColorAndSGR();
         }
 
         terminal.flush();
